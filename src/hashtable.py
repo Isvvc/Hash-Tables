@@ -56,7 +56,6 @@ class HashTable:
         '''
         index = self._hash_mod(key)
         self.storage[index] = (key, value)
-        print(f"Inserting {(key, value)}")
 
 
     def remove(self, key):
@@ -67,7 +66,12 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+        item = self.storage[index]
+        if item[0] == key:
+            self.storage[index] = None
+        else:
+            print(f"Key {key} not found")
 
 
     def retrieve(self, key):
@@ -93,8 +97,13 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        self.capacity *= 2
 
+        old_storage = self.storage.copy()
+        self.storage = [None] * self.capacity
+
+        for item in old_storage:
+            self.insert(item[0], item[1])
 
 
 if __name__ == "__main__":
