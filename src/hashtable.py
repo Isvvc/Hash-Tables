@@ -54,8 +54,9 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
-
+        index = self._hash_mod(key)
+        self.storage[index] = (key, value)
+        print(f"Inserting {(key, value)}")
 
 
     def remove(self, key):
@@ -77,7 +78,12 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+        item = self.storage[index]
+        if item[0] == key:
+            return item[1]
+        else:
+            return None
 
 
     def resize(self):
