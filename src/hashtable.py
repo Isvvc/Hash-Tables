@@ -43,6 +43,15 @@ class HashTable:
         return self._hash(key) % self.capacity
 
 
+    def findPreviousLinkedPair(self, key, node):
+        if isinstance(node.next, LinkedPair):
+            if node.next.key == key:
+                return node
+            return self.findPreviousLinkedPair(key, node.next)
+        else:
+            return node
+
+
     def insert(self, key, value):
         '''
         Store the value with the given key.
@@ -55,7 +64,26 @@ class HashTable:
         Fill this in.
         '''
         index = self._hash_mod(key)
-        self.storage[index] = LinkedPair(key, value)
+        node = self.storage[index]
+
+        # Check to see if the key already exists
+        if isinstance(node, LinkedPair):
+            # If the head is the correct node, update its value
+            if node.key == key:
+                node.value = value
+            else:
+                # Find the node we need to update the child of
+                prev = self.findPreviousLinkedPair(key, node)
+
+                if isinstance(prev.next, LinkedPair):
+                    # If the child is the correct node, update its value
+                    prev.next.value = value
+                else:
+                    # If there is no node of this key, create one
+                    prev.next = LinkedPair(key, value)
+        else:
+            # Save the key-value pair
+            self.storage[index] = LinkedPair(key, value)
 
 
     def remove(self, key):
@@ -83,11 +111,17 @@ class HashTable:
         Fill this in.
         '''
         index = self._hash_mod(key)
-        item = self.storage[index]
-        if item.key == key:
-            return item.value
-        else:
-            return None
+        node = self.storage[index]
+
+        if isinstance(node, LinkedPair):
+            if node.key == key:
+                return node.value
+            else:
+                prev = self.findPreviousLinkedPair(key, node)
+                if isinstance(prev.next, LinkedPair):
+                    return prev.next.value
+
+        return None
 
 
     def resize(self):
