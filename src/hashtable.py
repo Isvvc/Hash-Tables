@@ -95,11 +95,18 @@ class HashTable:
         Fill this in.
         '''
         index = self._hash_mod(key)
-        item = self.storage[index]
-        if isinstance(item, LinkedPair) and item.key == key:
-            self.storage[index] = None
-        else:
-            print(f"Key {key} not found")
+        node = self.storage[index]
+
+        if isinstance(node, LinkedPair):
+            if node.key == key:
+                self.storage[index] = None
+            else:
+                prev = self.findPreviousLinkedPair(key, node)
+                if isinstance(prev.next, LinkedPair):
+                    prev.next = None
+                    return 
+
+        print(f"Key {key} not found")
 
 
     def retrieve(self, key):
@@ -124,6 +131,11 @@ class HashTable:
         return None
 
 
+    def insertLinkedPairs(self, node):
+        self.insert(node.key, node.value)
+        if isinstance(node.next, LinkedPair):
+            self.insertLinkedPairs(node.next)
+
     def resize(self):
         '''
         Doubles the capacity of the hash table and
@@ -137,7 +149,8 @@ class HashTable:
         self.storage = [None] * self.capacity
 
         for item in old_storage:
-            self.insert(item.key, item.value)
+            if isinstance(item, LinkedPair):
+                self.insertLinkedPairs(item)
 
 
 if __name__ == "__main__":
