@@ -55,7 +55,7 @@ class HashTable:
         Fill this in.
         '''
         index = self._hash_mod(key)
-        self.storage[index] = (key, value)
+        self.storage[index] = LinkedPair(key, value)
 
 
     def remove(self, key):
@@ -68,7 +68,7 @@ class HashTable:
         '''
         index = self._hash_mod(key)
         item = self.storage[index]
-        if item[0] == key:
+        if isinstance(item, LinkedPair) and item.key == key:
             self.storage[index] = None
         else:
             print(f"Key {key} not found")
@@ -84,8 +84,8 @@ class HashTable:
         '''
         index = self._hash_mod(key)
         item = self.storage[index]
-        if item[0] == key:
-            return item[1]
+        if item.key == key:
+            return item.value
         else:
             return None
 
@@ -103,7 +103,7 @@ class HashTable:
         self.storage = [None] * self.capacity
 
         for item in old_storage:
-            self.insert(item[0], item[1])
+            self.insert(item.key, item.value)
 
 
 if __name__ == "__main__":
