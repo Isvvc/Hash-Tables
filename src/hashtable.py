@@ -103,7 +103,7 @@ class HashTable:
             else:
                 prev = self.findPreviousLinkedPair(key, node)
                 if isinstance(prev.next, LinkedPair):
-                    prev.next = None
+                    prev.next = prev.next.next
                     return 
 
         print(f"Key {key} not found")
